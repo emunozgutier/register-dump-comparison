@@ -1,18 +1,50 @@
-# React + Vite
+# Register Dump Comparison Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A powerful web-based utility designed to compare register dumps, making it easy to identify differences between hardware states or configurations.
 
-Currently, two official plugins are available:
+**Live Demo:** [https://emunozgutier.github.io/register-dump-comparison/](https://emunozgutier.github.io/register-dump-comparison/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Visual Comparison**: Easily spot differences between two or more register dumps.
+- **Support for Multiple Formats**: (Add specific formats if known, e.g., CSV, Hex, etc.)
+- **Fast and Responsive**: Built with React and Vite for a smooth user experience.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Getting Started
 
-Note: This will impact Vite dev & build performances.
+### Prerequisites
 
-## Expanding the ESLint configuration
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/emunozgutier/register-dump-comparison.git
+   cd register-dump-comparison
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Usage
+
+1. Open the application in your browser (usually at `http://localhost:5173`).
+2. Upload or paste your register dumps into the comparison fields.
+3. Use the comparison view to analyze differences.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

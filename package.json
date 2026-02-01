@@ -1,5 +1,6 @@
 {
   "name": "register-dump-comparison",
+  "description": "A tool for comparing hardware register dumps.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
