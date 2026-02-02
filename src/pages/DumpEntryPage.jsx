@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { Upload, Save, FileText, AlertCircle, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Card, Button, Form, Badge, ListGroup } from 'react-bootstrap';
 
 const DumpEntryPage = () => {
-    const navigate = useNavigate();
     const { addDump, dumps, removeDump } = useAppStore();
     const [dumpName, setDumpName] = useState('');
     const [dumpContent, setDumpContent] = useState('');
@@ -18,7 +17,7 @@ const DumpEntryPage = () => {
         reader.onload = (event) => {
             setDumpContent(event.target.result);
             if (!dumpName) {
-                setDumpName(file.name.replace(/\.[^/.]+$/, "")); // remove extension
+                setDumpName(file.name.replace(/\.[^/.]+$/, ""));
             }
         };
         reader.readAsText(file);
@@ -30,18 +29,12 @@ const DumpEntryPage = () => {
         let parseCount = 0;
 
         lines.forEach(line => {
-            // Remove comments and trim
             const cleanLine = line.split(/[#;]/)[0].trim();
             if (!cleanLine) return;
-
-            // Try to match basic "Address Value" or "Name Value" patterns
-            // Supports: 0x100 0xFF, 0x100=0xFF, REG 0xFF
             const parts = cleanLine.split(/[\s=,:]+/);
-
             if (parts.length >= 2) {
                 const key = parts[0];
                 const value = parts[1];
-                // We store as is, comparison page will handle normalization/matching
                 data[key] = value;
                 parseCount++;
             }
@@ -52,18 +45,18 @@ const DumpEntryPage = () => {
     const handleSave = () => {
         setError('');
         if (!dumpName.trim()) {
-            setError('Please provide a name for this dump.');
+            setError('Name required.');
             return;
         }
         if (!dumpContent.trim()) {
-            setError('Please provide dump content.');
+            setError('Content required.');
             return;
         }
 
         const { data, count } = parseDump(dumpContent);
 
         if (count === 0) {
-            setError('Could not parse any valid registers. content should be "Address Value" per line.');
+            setError('No valid registers found.');
             return;
         }
 
@@ -78,97 +71,89 @@ const DumpEntryPage = () => {
         addDump(newDump);
         setDumpName('');
         setDumpContent('');
-        // navigate('/comparison'); // Optional: redirect to comparison or stay
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
-            <div className="mb-8 flex flex-col gap-2">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                    Register Dump Entry
-                </h1>
-                <p className="text-gray-400">Import or paste register dump files for comparison.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="h-100 bg-[#161b22] border-[#30363d] text-[#c9d1d9] shadow-sm">
+            <Card.Header className="bg-[#0d1117] border-bottom border-[#30363d] py-3">
+                <h5 className="mb-0 text-white font-semibold">Dump Entry</h5>
+                <small className="text-gray-500">Import dumps</small>
+            </Card.Header>
+            <Card.Body className="d-flex flex-column p-3">
                 {/* Input Section */}
-                <div className="md:col-span-2 space-y-6">
-                    <div className="glass-panel p-6 animate-fade-in-up">
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Dump Name</label>
-                            <input
-                                type="text"
-                                value={dumpName}
-                                onChange={(e) => setDumpName(e.target.value)}
-                                placeholder="e.g. Broken State, Working State, dump_v1.log"
-                                className="input-field"
-                            />
-                        </div>
+                <div className="mb-4">
+                    <Form.Group className="mb-2">
+                        <Form.Control
+                            size="sm"
+                            type="text"
+                            placeholder="Dump Name (e.g. Working)"
+                            value={dumpName}
+                            onChange={(e) => setDumpName(e.target.value)}
+                            className="bg-[#0d1117] border-[#30363d] text-white placeholder-gray-600"
+                        />
+                    </Form.Group>
 
-                        <div className="mb-4">
-                            <div className="flex justify-between items-center mb-2">
-                                <label className="block text-sm font-medium text-gray-400">Dump Content</label>
-                                <label className="cursor-pointer text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
-                                    <Upload size={14} /> Upload File
-                                    <input type="file" className="hidden" onChange={handleFileUpload} />
-                                </label>
-                            </div>
-                            <textarea
-                                value={dumpContent}
-                                onChange={(e) => setDumpContent(e.target.value)}
-                                placeholder={`0x1000 0x00000001\n0x1004 0xDEADBEEF\n...`}
-                                className="input-field font-mono h-[300px] resize-y"
-                            />
-                        </div>
-
-                        {error && (
-                            <div className="mb-4 p-3 bg-red-900/30 border border-red-800 rounded-lg flex items-center gap-2 text-red-200 text-sm">
-                                <AlertCircle size={16} /> {error}
-                            </div>
-                        )}
-
-                        <div className="flex justify-end">
-                            <button
-                                onClick={handleSave}
-                                className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg flex items-center gap-2 shadow-lg shadow-emerald-500/20"
-                            >
-                                <Save size={18} /> Parse & Save Dump
-                            </button>
-                        </div>
+                    <div className="mb-2 d-flex justify-content-end">
+                        <Form.Label htmlFor="file-upload" className="btn btn-sm btn-outline-primary mb-0 d-flex align-items-center gap-1 cursor-pointer">
+                            <Upload size={14} /> Upload
+                        </Form.Label>
+                        <Form.Control
+                            id="file-upload"
+                            type="file"
+                            className="d-none"
+                            onChange={handleFileUpload}
+                        />
                     </div>
+
+                    <Form.Control
+                        as="textarea"
+                        rows={6}
+                        placeholder="0x1000 0xFF..."
+                        value={dumpContent}
+                        onChange={(e) => setDumpContent(e.target.value)}
+                        className="bg-[#0d1117] border-[#30363d] text-white font-mono small mb-2 placeholder-gray-600"
+                        style={{ resize: 'none' }}
+                    />
+
+                    {error && (
+                        <div className="text-danger small mb-2 d-flex align-items-center gap-1">
+                            <AlertCircle size={14} /> {error}
+                        </div>
+                    )}
+
+                    <Button variant="success" size="sm" className="w-100 d-flex align-items-center justify-content-center gap-2" onClick={handleSave}>
+                        <Save size={14} /> Parse & Save
+                    </Button>
                 </div>
 
-                {/* Saved Dumps Sidebar */}
-                <div className="md:col-span-1">
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Saved Dumps</h3>
-                    <div className="space-y-3">
+                <hr className="border-secondary my-2" />
+
+                {/* List */}
+                <h6 className="text-gray-500 text-uppercase small font-bold mb-3">Saved Dumps</h6>
+                <div className="flex-grow-1 overflow-auto" style={{ maxHeight: '300px' }}>
+                    <ListGroup variant="flush">
                         {dumps.length === 0 ? (
-                            <div className="glass-panel p-4 text-center text-gray-500 text-sm">
-                                No dumps saved yet.
-                            </div>
+                            <div className="text-center text-gray-500 small italic">No dumps saved.</div>
                         ) : (
                             dumps.map((dump) => (
-                                <div key={dump.id} className="glass-panel p-4 flex flex-col gap-2 group hover:border-emerald-500/50 transition-colors">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex items-center gap-2 text-white font-medium">
-                                            <FileText size={16} className="text-emerald-400" />
-                                            {dump.name}
+                                <ListGroup.Item key={dump.id} className="bg-[#0d1117] border-[#30363d] text-gray-300 p-2 mb-2 rounded d-flex justify-content-between align-items-center">
+                                    <div className="d-flex align-items-center gap-2 overflow-hidden">
+                                        <FileText size={16} className="text-emerald-400 flex-shrink-0" />
+                                        <div className="text-truncate">
+                                            <div className="fw-bold small">{dump.name}</div>
+                                            <div className="text-xs text-gray-500">{Object.keys(dump.parsedData).length} regs</div>
                                         </div>
-                                        <button onClick={() => removeDump(dump.id)} className="text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Trash2 size={14} />
-                                        </button>
                                     </div>
-                                    <div className="text-xs text-gray-500 flex justify-between">
-                                        <span>{new Date(dump.timestamp).toLocaleTimeString()}</span>
-                                        <span>{Object.keys(dump.parsedData).length} regs</span>
-                                    </div>
-                                </div>
+                                    <Button variant="link" className="text-gray-500 hover:text-danger p-0" onClick={() => removeDump(dump.id)}>
+                                        <Trash2 size={14} />
+                                    </Button>
+                                </ListGroup.Item>
                             ))
                         )}
-                    </div>
+                    </ListGroup>
                 </div>
-            </div>
-        </div>
+            </Card.Body>
+        </Card>
     );
 };
 
