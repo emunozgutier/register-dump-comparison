@@ -1,35 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import RegisterDefinitionPage from './pages/RegisterDefinitionPage';
+import DumpEntryPage from './pages/DumpEntryPage';
+import ComparisonPage from './pages/ComparisonPage';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] flex flex-col items-center">
+        <div className="w-full max-w-7xl">
+          <Navigation />
+          <main className="px-6 pb-12 w-full">
+            <Routes>
+              <Route path="/" element={<RegisterDefinitionPage />} />
+              <Route path="/dump-entry" element={<DumpEntryPage />} />
+              <Route path="/comparison" element={<ComparisonPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+        </div>
       </div>
-      <h1>Test 2 Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
