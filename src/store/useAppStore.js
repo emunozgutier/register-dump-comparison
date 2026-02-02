@@ -15,6 +15,10 @@ export const useAppStore = create(
                 registerDefinitions: [...state.registerDefinitions, definition]
             })),
 
+            setRegisterDefinitions: (definitions) => set(() => ({
+                registerDefinitions: definitions
+            })),
+
             updateDefinition: (index, definition) => set((state) => {
                 const newDefs = [...state.registerDefinitions];
                 newDefs[index] = definition;

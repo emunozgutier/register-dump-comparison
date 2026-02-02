@@ -36,12 +36,12 @@ function App() {
           >
             <Row>
               {/* Column 1: Definitions */}
-              <Col md={6} className="mb-4">
+              <Col md={8} className="mb-4">
                 <RegisterDefinitionPage />
               </Col>
 
               {/* Column 2: Dump Entry */}
-              <Col md={6} className="mb-4">
+              <Col md={4} className="mb-4">
                 <DumpEntryPage />
               </Col>
             </Row>
